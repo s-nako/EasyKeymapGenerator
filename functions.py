@@ -2,6 +2,7 @@ import bpy
 import os
 from bl_keymap_utils import keymap_hierarchy
 
+temp_save = []
 
 def get_keyconfig_dict():
     """
@@ -75,3 +76,37 @@ def add_keymaps_to_dict(keymaps, km, children, level):
         return parent_dict
     else:  # add list
         return list(km.keymap_items)
+
+
+def save_keymaps(item_list):
+    global temp_save
+    temp_save = item_list
+
+def copy_keymap_item_lists(to_kmi_list):
+    global temp_save
+    copied_keymap_items = temp_save
+    for from_kmi, to_kmi in zip(copied_keymap_items, to_kmi_list):
+        to_kmi.key_modifier = from_kmi.key_modifier
+        to_kmi.map_type = from_kmi.map_type
+        to_kmi.type = from_kmi.type
+        to_kmi.value = from_kmi.value
+
+def copy_keymap_item(from_kmi, to_kmi):
+    #TODO it takes too long time reduce processing
+    to_kmi.any = from_kmi.any
+    to_kmi.shift = from_kmi.shift
+    to_kmi.ctrl = from_kmi.ctrl
+    to_kmi.alt = from_kmi.alt
+    to_kmi.oskey = from_kmi.oskey
+
+    to_kmi.repeat = from_kmi.repeat
+    to_kmi.propvalue = from_kmi.propvalue
+
+    to_kmi.key_modifier = from_kmi.key_modifier
+    to_kmi.map_type = from_kmi.map_type
+    to_kmi.type = from_kmi.type
+    to_kmi.value = from_kmi.value
+
+def get_temp():
+    global temp_save
+    return temp_save

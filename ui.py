@@ -6,6 +6,7 @@ from PySide2.QtWidgets import *
 from . import functions
 from . import keymap_change_dialog
 
+import bpy
 
 class KeymapLabel(QLabel):
     """ label to display """
@@ -18,6 +19,7 @@ class KeymapTree(QWidget):
     """ main keymap_tree widget """
     def __init__(self, parent=None, additional=False):
         super(KeymapTree, self).__init__(parent)
+        self.kc_text = ""
         self.additional = additional
         self._generate_ui()
         self._init()
@@ -43,6 +45,10 @@ class KeymapTree(QWidget):
         self.keymap_tree.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.keymap_tree.setSelectionBehavior(QAbstractItemView.SelectItems)
         self.keymap_tree.setStyleSheet('QTreeView { show-decoration-selected: 1;}')
+
+        self.keymap_tree.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.keymap_tree.customContextMenuRequested.connect(self._show_context_menu)
+
         main_layout.addWidget(self.keymap_tree)
         main_layout.setMargin(0)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -87,8 +93,8 @@ class KeymapTree(QWidget):
         """
         self.keymap_tree.setHeaderLabels(["action", "keymap"])
         self.keymap_tree.clear()
-        kc_text = self.keyconfig_combobox.currentText()
-        kc = functions.get_keyconfig(kc_text, self.keyconfig_dict)
+        self.kc_text = self.keyconfig_combobox.currentText()
+        kc = functions.get_keyconfig(self.kc_text, self.keyconfig_dict)
         keymap_dict = functions.get_keymap_dict(kc)
         for km in keymap_dict.keys():
             parent_km = QTreeWidgetItem([km])
@@ -110,6 +116,63 @@ class KeymapTree(QWidget):
             if column == 1 and item_widget:
                 dialog = keymap_change_dialog.KeymapChangeDialog(item_widget.keymap_item, parent=self)
                 dialog.show()
+
+    def _get_kmi_from_tree_item(self, item_list):
+        keymap_item_list = []
+        for item in item_list:
+            print("key config text", self.kc_text)
+            km_text = item.parent().text(0)
+            print("key map text", km_text)
+            item_widget = self.keymap_tree.itemWidget(item, 0)
+            if item_widget:
+                kmi = item_widget.keymap_item
+                keymap_item_list.append(kmi)
+                print("key map item idname", kmi.idname)
+            else:
+                print("no tree item widget")
+        return keymap_item_list
+
+    def _show_context_menu(self, pos):
+        """
+        display context menu to copy of paste keymap items
+        """
+        column = self.keymap_tree.currentColumn()
+        text = self.keymap_tree.currentItem().text(column)
+        if column != 1:
+            return
+
+        copy_keymap_action = QAction("Copy Keymap")
+        copy_keymap_action.triggered.connect(self._copy_keymap)
+
+        paste_keymap_action = QAction("Paste Keymap")
+        paste_keymap_action.triggered.connect(self._paste_keymap)
+
+        menu = QMenu(self.keymap_tree)
+        menu.addAction(copy_keymap_action)
+        menu.addAction(paste_keymap_action)
+        menu.exec_(self.keymap_tree.mapToGlobal(pos))
+
+    def _copy_keymap(self):
+        """
+        save the selected items as a list of [key str, keymap]
+        """
+        current_selection = self.keymap_tree.selectedItems()
+        print("current_selection", current_selection)
+        keymap_item_list = self._get_kmi_from_tree_item(current_selection)
+        print("keymap_item_list", keymap_item_list)
+        functions.save_keymaps(keymap_item_list)
+
+    def _paste_keymap(self):
+        current_selection = self.keymap_tree.selectedItems()
+        copied_keymap_items = functions.get_temp()
+        copied_length = len(copied_keymap_items)
+        for idx, item in enumerate(current_selection):
+            item_widget = self.keymap_tree.itemWidget(item, 0)
+            if item_widget and idx<copied_length:
+                copied_kmi = copied_keymap_items[idx]
+                current_kmi = item_widget.keymap_item
+                functions.copy_keymap_item(copied_kmi, current_kmi)
+                item.setText(1, copied_kmi.to_string())
 
 
 class EasyKeymapMainWindow(QMainWindow):

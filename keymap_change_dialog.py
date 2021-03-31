@@ -85,70 +85,7 @@ class MapTypeWidget(QWidget):
         # repeat button
         if map_type == "Keyboard":
             self.repeat_checkbox.setChecked(km_item.repeat)
-        """
-        if map_type == "Keyboard":
-            self.type_button.setText(km_item.to_string())
-            self.type.setText(config.KEY_TYPES.inverse[km_item.type])
-            self.value_combobox.setCurrentText(config.CLICK_VALUES.inverse[km_item.value])
-            for key in self.key_buttons.keys():
-                if key == "key_modifier":
-                    key_modifier = km_item.key_modifier
-                    if key_modifier:
-                        self.key_buttons["key_modifier"].setChecked(False)
-                        self.key_buttons["key_modifier"].setText("  ")
-                    else:
-                        self.key_buttons["key_modifier"].setChecked(True)
 
-                       self.key_buttons["key_modifier"].setText(key_modifier)
-                else:
-                    self.key_buttons[key].setChecked(getattr(km_item, key))
-        elif map_type == "Tweak":
-            self.type.setCurrentText(config.TWEAK_TYPES.inverse[km_item.type])
-            self.value_combobox.setCurrentText(config.TWEAK_VALUES.inverse[km_item.value])
-            for key in self.key_buttons.keys():
-                if key == "key_modifier":
-                    key_modif = km_item.key_modifier
-                    if key_modif:
-                        self.key_buttons["key_modifier"].setChecked(False)
-                        self.key_buttons["key_modifier"].setText("  ")
-                    else:
-                        self.key_buttons["key_modifier"].setChecked(True)
-                        self.key_buttons["key_modifier"].setText(key_modif)
-                else:
-                    self.key_buttons[key].setChecked(getattr(km_item, key))
-        elif map_type == "Mouse":
-            self.type_button.setText(km_item.to_string())
-            self.type.setCurrentText(config.MOUSE_TYPES.inverse[km_item.type])
-            self.value_combobox.setCurrentText(config.CLICK_VALUES.inverse[km_item.value])
-            for key in self.key_buttons.keys():
-                if key == "key_modifier":
-                    key_modif = km_item.key_modifier
-                    if key_modif:
-                        self.key_buttons["key_modifier"].setChecked(False)
-                        self.key_buttons["key_modifier"].setText("  ")
-                    else:
-                        self.key_buttons["key_modifier"].setChecked(True)
-                        self.key_buttons["key_modifier"].setText(key_modif)
-                else:
-                    self.key_buttons[key].setChecked(getattr(km_item, key))
-        elif map_type == "NDOF":
-            self.type_button.setText(km_item.to_string())
-            self.type.setCurrentText(config.NDOF_TYPES.inverse[km_item.type])
-            self.value_combobox.setCurrentText(config.CLICK_VALUES.inverse[km_item.value])
-            for key in self.key_buttons.keys():
-                if key == "key_modifier":
-                    key_modif = km_item.key_modifier
-                    if key_modif:
-                        self.key_buttons["key_modifier"].setChecked(False)
-                        self.key_buttons["key_modifier"].setText("  ")
-                    else:
-                        self.key_buttons["key_modifier"].setChecked(True)
-                        self.key_buttons["key_modifier"].setText(key_modif)
-                else:
-                    self.key_buttons[key].setChecked(getattr(km_item, key))
-        elif map_type == "Timer":
-            self.type.setCurrentText(config.TIMER_TYPES.inverse[km_item.type])
-        """
 
     def redraw(self, map_type):
         """
