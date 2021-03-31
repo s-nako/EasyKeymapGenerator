@@ -4,6 +4,7 @@ from bl_keymap_utils import keymap_hierarchy
 
 temp_save = []
 
+
 def get_keyconfig_dict():
     """
     get dictionary of kerconfig_name(str) and path_to_config_file(str)
@@ -82,6 +83,12 @@ def save_keymaps(item_list):
     global temp_save
     temp_save = item_list
 
+
+def get_saved_keymap():
+    global temp_save
+    return temp_save
+
+
 def copy_keymap_item_lists(to_kmi_list):
     global temp_save
     copied_keymap_items = temp_save
@@ -91,8 +98,9 @@ def copy_keymap_item_lists(to_kmi_list):
         to_kmi.type = from_kmi.type
         to_kmi.value = from_kmi.value
 
+
 def copy_keymap_item(from_kmi, to_kmi):
-    #TODO it takes too long time reduce processing
+    # TODO it takes too long time reduce processing
     to_kmi.any = from_kmi.any
     to_kmi.shift = from_kmi.shift
     to_kmi.ctrl = from_kmi.ctrl
@@ -106,7 +114,3 @@ def copy_keymap_item(from_kmi, to_kmi):
     to_kmi.map_type = from_kmi.map_type
     to_kmi.type = from_kmi.type
     to_kmi.value = from_kmi.value
-
-def get_temp():
-    global temp_save
-    return temp_save

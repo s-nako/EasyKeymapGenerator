@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*
 
-import sys
 from PySide2.QtCore import Qt, QEventLoop
 from PySide2.QtWidgets import *
 from . import functions
 from . import keymap_change_dialog
 
-import bpy
 
 class KeymapLabel(QLabel):
     """ label to display """
@@ -137,7 +135,6 @@ class KeymapTree(QWidget):
         display context menu to copy of paste keymap items
         """
         column = self.keymap_tree.currentColumn()
-        text = self.keymap_tree.currentItem().text(column)
         if column != 1:
             return
 
@@ -164,11 +161,11 @@ class KeymapTree(QWidget):
 
     def _paste_keymap(self):
         current_selection = self.keymap_tree.selectedItems()
-        copied_keymap_items = functions.get_temp()
+        copied_keymap_items = functions.get_saved_keymap()
         copied_length = len(copied_keymap_items)
         for idx, item in enumerate(current_selection):
             item_widget = self.keymap_tree.itemWidget(item, 0)
-            if item_widget and idx<copied_length:
+            if item_widget and idx < copied_length:
                 copied_kmi = copied_keymap_items[idx]
                 current_kmi = item_widget.keymap_item
                 functions.copy_keymap_item(copied_kmi, current_kmi)
